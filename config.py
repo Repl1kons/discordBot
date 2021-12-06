@@ -1,3 +1,3 @@
-token = "OTE1NjAxMzM0MjczNzA4MDgy.Yad-MQ.Hk_5G4jO0JAQPE60JBmMJbT90zM"
+token = ""
 
 ID = 854683737895337984
