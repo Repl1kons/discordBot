@@ -1,9 +1,17 @@
+# -*- coding: utf-8 -*-
 import asyncio
 
 import discord
 from discord.ext import commands
 import config
 from discord import utils
+
+import youtube_dl
+import os
+from discord.ext import commands
+from discord.utils import get
+from discord import FFmpegPCMAudio
+from os import system
 client = discord.Client()
 
 # bot = commands.Bot(command_prefix='!')
@@ -16,19 +24,43 @@ class MyClient(discord.Client):
         print('Message from {0.author}: {0.content}'.format(message))
 
 
+
+
+
 @client.event
 async def on_message(message):
+
+    with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "a") as debuging:
+            debuging.write(f"Logged in as {client.user} (ID: {client.user.id})\n"
+                           f"Message from {message.author}: {message.content}\n"
+                           f"----------------------------------------------------\n")
+
+            debuging.close()
+
+
+
+
+    if message.content == "$clear_debug" or message.content[:message.content.find(' ')] == '$clear_debug':
+        with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "w") as debuging:
+            debuging.write(" ")
+            debuging.close()
+            await message.reply("Журнал откладки очищен")
+
+    unwarnusers = ["Dyno#3861", "Carl-bot#1536", "MEE6#4876", "Charlzerx#9889"]
     id = client.get_guild(config.ID)
     badwords = ["еблан","лох", "пидор", "нацист", "уебан", "пидорас", "пидарас", "ебал", "ебальник", "хуй", "пизда",
                 "шлюха", "подьебал", "выебал", "уебал", "сьебал", "съебал", "пизди", "пиздишь", "пиздабол", "пиздаплет",
                 "залупень", "залупа", "залупка"]
-    unwarnusers = ["Dyno#3861", "Carl-bot#1536", "MEE6#4876", "Charlzerx#9889"]
+
 
     if message.content == "$clearall" or message.content[:message.content.find(' ')] == '$clearall':
         warnFile = open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/warns.txt", "w")
         warnFile.write("")
         warnFile.close()
         await message.channel.send('Все нарушители очищенны')
+
+
+
     if message.content == "$clear" or message.content[:message.content.find(' ')] == '$clear':
         if message.content == '$clear':
             await message.channel.send('Напишмте $clear @упоминание')
@@ -55,6 +87,8 @@ async def on_message(message):
             if str(message.author.mention) == user:
                 warns+=1
             await message.channel.send(f"______________________\nНарушители:\n" + '\n'.join(map(str, warnYou)) + f"\n______________________\nВаши нарушения: {warns}\n______________________")
+
+
 
     for word in badwords:
         if word in message.content.lower():
