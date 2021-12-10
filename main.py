@@ -37,20 +37,12 @@ async def on_message(message):
                             f"Message from {message.author}: {message.content}\n"
                             f"_______________________\n")
 
-    # with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "a") as debugging:
-    #     debugging.write(f"Logged in as {client.user} (ID: {client.user.id})\n"
-    #                     f"Message from {message.author}: {message.content}\n"
-    #                     f"_______________________\n")
-    #     debugging.close()
 
 
 
 
 
     if message.content == "!clear_debug" or message.content[:message.content.find(' ')] == '!clear_debug':
-        # with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "w") as debugging:
-        #     debugging.write(" ")
-        #     debugging.close()
         await message.channel.purge(limit=100)
         await message.reply("Журнал отладки очищен")
 
