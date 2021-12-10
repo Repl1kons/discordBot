@@ -1,25 +1,67 @@
 import discord
-
+from discord.ext import commands
 import config
 
-client = discord.Client()
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
+
+@client.event
+async def on_ready():
+    print('We have logged in as {0.user}'.format(client))
+    game = discord.Game("Minecraft!")
+    await client.change_presence(status=discord.Status.idle, activity=game)
+
+
+@client.event
+async def on_member_join(member):
+    channel = client.get_channel(918118713050419210)
+    await channel.send(f"hello {member} you came to the Rebzi server, thank you for being with us")
+
+@client.event
+async def on_member_remove(member):
+    channel = client.get_channel(918118713050419210)
+    await channel.send(f"Наш карабль под названием Rebzi потерпели утрату, нас покинул {member}")
+
+
 
 
 @client.event
 async def on_message(message):
-    with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "a") as debugging:
-        debugging.write(f"Logged in as {client.user} (ID: {client.user.id})\n"
-                        f"Message from {message.author}: {message.content}\n"
-                        f"----------------------------------------------------\n")
-        debugging.close()
 
-    if message.content == "!clear_debug" or message.content[:message.content.find(' ')] == '!clear_debug':
-        with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "w") as debugging:
-            debugging.write(" ")
-            debugging.close()
-            await message.reply("Журнал отладки очищен")
 
     unwarnusers = ["Dyno#3861", "Carl-bot#1536", "MEE6#4876", "Charlzerx#9889"]
+    channel_debug = client.get_channel(918976290479022201)
+
+    if str(message.author) not in unwarnusers:
+        await channel_debug.send(f"Logged in as {client.user} (ID: {client.user.id})\n"
+                            f"Message from {message.author}: {message.content}\n"
+                            f"_______________________\n")
+
+    # with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "a") as debugging:
+    #     debugging.write(f"Logged in as {client.user} (ID: {client.user.id})\n"
+    #                     f"Message from {message.author}: {message.content}\n"
+    #                     f"_______________________\n")
+    #     debugging.close()
+
+
+
+
+
+    if message.content == "!clear_debug" or message.content[:message.content.find(' ')] == '!clear_debug':
+        # with open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/debugging.txt", "w") as debugging:
+        #     debugging.write(" ")
+        #     debugging.close()
+        await message.channel.purge(limit=100)
+        await message.reply("Журнал отладки очищен")
+
+    if message.content == "!all_commands" or message.content[:message.content.find(' ')] == '!all_commands':
+        await message.channel.send(f"Команда !clear_debug очищает канал debuging (он доступен только для админов)\n"
+                                   f"Команда !clear_all очищает список нарушителей сервера\n"
+                                   f"Команда !clear @упоминание удаляет конкретного человека указаного после символа @ из списка нарушителей\n"
+                                   f"Команда !clear_allmessage удаляет 100 сообщений в канале\n"
+                                   f"Команда !warns выводит список нарушителей\n"
+                                   f"Команда !all_commands выводит список всех команд этого бота")
+
     # id = client.get_guild(config.ID)
     badwords = ["еблан", "лох", "пидор", "нацист", "уебан", "пидорас", "пидарас", "ебал", "ебальник", "хуй", "пизда",
                 "шлюха", "подьебал", "выебал", "уебал", "сьебал", "съебал", "пизди", "пиздишь", "пиздабол", "пиздаплет",
@@ -88,6 +130,5 @@ async def on_message(message):
 
                 await channel.send(
                     f"__________________________________________________\nЗа человеком {message.author.mention} было замечено нарушение.\nВот его сообщение: \n{message.content}\nНарушение было в канале {message.channel}. \n Нарушение: {warns}")
-
 
 client.run(config.token)
