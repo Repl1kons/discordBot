@@ -1,15 +1,20 @@
 import discord
 from discord.ext import commands
 import config
+from badwords import bad_words
 
 intents = discord.Intents.all()
-client = discord.Client(intents=intents)
+client = discord.Client(intents=intents, command_prefix="!")
+
+
+
+
 
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     game = discord.Game("Minecraft!")
-    await client.change_presence(status=discord.Status.idle, activity=game)
+    await client.change_presence(status=discord.Status.online, activity=game)
 
 
 @client.event
@@ -20,7 +25,7 @@ async def on_member_join(member):
 @client.event
 async def on_member_remove(member):
     channel = client.get_channel(918118713050419210)
-    await channel.send(f"Наш карабль под названием Rebzi потерпели утрату, нас покинул {member}")
+    await channel.send(f"Наш карабль под названием Rebzi потерпел утрату, нас покинул {member}")
 
 
 
@@ -55,9 +60,8 @@ async def on_message(message):
                                    f"Команда !all_commands выводит список всех команд этого бота")
 
     # id = client.get_guild(config.ID)
-    badwords = ["еблан", "лох", "пидор", "нацист", "уебан", "пидорас", "пидарас", "ебал", "ебальник", "хуй", "пизда",
-                "шлюха", "подьебал", "выебал", "уебал", "сьебал", "съебал", "пизди", "пиздишь", "пиздабол", "пиздаплет",
-                "залупень", "залупа", "залупка"]
+    # плохие слова находявшиеся в отдельном файле badwords это переменная bad_words это словарь слов в отдельном файле
+    badwords = bad_words
 
     if message.content == "!clearall" or message.content[:message.content.find(' ')] == '!clearall':
         warn_file = open("C:/Users/dubov/PycharmProjects/DiscordAdminBot/mainSpace/warns.txt", "w")
@@ -119,8 +123,14 @@ async def on_message(message):
                     user = await client.fetch_user(user_id=664225659278852148)
                     await user.send(
                         f'Пользователь {message.author.mention}, непристойно себя ведет на сервере Rebzi, вот его сообщение:  \n{message.content}\nНарушение было в канале {message.channel}. \n Нарушение: {warns}')
+                # if warns > 25:
+                #     await client.fetch_user()
+                #     await message.channel.send(f"Изгоняем участника {message.author.mention} по причине: Некультурные словечки")
+
+
 
                 await channel.send(
                     f"__________________________________________________\nЗа человеком {message.author.mention} было замечено нарушение.\nВот его сообщение: \n{message.content}\nНарушение было в канале {message.channel}. \n Нарушение: {warns}")
+
 
 client.run(config.token)
